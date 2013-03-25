@@ -1,3 +1,7 @@
+## JireTimer
+
+Currenty under development
+
 # JT/app
 
 This folder contains the javascript files for the application.
