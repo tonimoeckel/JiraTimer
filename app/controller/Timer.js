@@ -16,9 +16,18 @@ Ext.define('JT.controller.Timer', {
         'JT.view.grid.Projects'
     ],
 
+    models: [
+        'Session',
+        'Issue'
+    ],
+
+    stores: [
+        'Sessions'
+    ],
+
 
     onAfterTimerRender: function(timer){
-
+        var me = this;
         chrome.tabs.query(
             {
                 active: true,
@@ -26,13 +35,20 @@ Ext.define('JT.controller.Timer', {
             },
             function(tabs){
 
-                var selectissuebutton = timer.down('selectissuebutton'),
-                    params = Ext.Object.fromQueryString(tabs[0].url,true),
-                    issueKey = params.selectedIssue;
+                var params = Ext.Object.fromQueryString(tabs[0].url,true),
+                    issueKey = params.selectedIssue,
+                    sessions = Ext.create('JT.store.Sessions');
+                    sessionRecord = sessions.findRecord('issue_id',issueKey);
 
-                selectissuebutton.setText(issueKey);
+                if (!sessionRecord){
+                    sessionRecord = me.getModel('Session').create({
+                        issue_id: issueKey
+                    });
+                }
 
-        });
+                timer.setRecord(sessionRecord);
+            }
+        );
 
     },
 
@@ -68,6 +84,18 @@ Ext.define('JT.controller.Timer', {
 
 
 
+    /**
+     * @event when timer toggle is on or off
+     * @param {Ext.form.Checkbox} toggle
+     * @param {Boolean|String} state the new toggle state value
+     */
+    onToggleChange: function(toggle,state){
+        var timer = toggle.up('timer');
+        state ? timer.start() : timer.stop();
+    },
+
+
+
     init: function() {
         this.control({
             'timer': {
@@ -75,6 +103,9 @@ Ext.define('JT.controller.Timer', {
             },
             'timer selectissuebutton': {
                 click: this.onSelectIssueButtonClick
+            },
+            'timer toggleslide': {
+                change: this.onToggleChange
             }
         });
     }

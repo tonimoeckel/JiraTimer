@@ -15,22 +15,37 @@ Ext.define('JT.model.Session', {
     fields: [
         {
             name: 'startdate',
-            type: 'date'
+            type: 'date',
+            useNull: true
         },
         {
-            name: 'timeSpend'
+            name: 'timeSpend',
+            defaultValue: 0
         },
         {
             name: 'active',
-            type: 'bool'
+            type: 'bool',
+            defaultValue: false
+        },
+        {
+            name: 'issue_id'
         }
     ],
 
+    proxy: {
+        type: 'localstorage',
+        id  : 'JireTimer-Sessions'
+    },
+
     hasOne: [
         {
+            instanceName: 'issue',
+            associationKey: 'issue',
+            foreignKey: 'issue_id',
             model: 'JT.model.Issue',
-            setterName: 'setIssue',
-            getterName: 'getIssue'
+            getterName: 'getIssue',
+            setterName: 'setIssue'
         }
     ]
+
 });

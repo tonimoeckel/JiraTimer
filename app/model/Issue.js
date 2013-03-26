@@ -7,9 +7,20 @@
  */
 Ext.define('JT.model.Issue', {
     extend: 'Ext.data.Model',
+    idProperty: 'key',
     fields: [
         {name: 'key',  type: 'string'},
         {name: 'self'},
         {name: 'title',  type: 'string', mapping: 'fields.summary'}
-    ]
+    ],
+    proxy: {
+        type: 'rest',
+        url: 'filter/favourite',
+        reader: {
+            type: 'json'
+        },
+        writer: {
+            type: 'json'
+        }
+    }
 });

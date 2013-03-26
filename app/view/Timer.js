@@ -19,52 +19,121 @@ Ext.define("JT.view.Timer", {
 
     bodyPadding: 20,
 
-    items:[
-        {
-            xtype: 'selectissuebutton',
-            anchor: '100%',
-            text: 'Vorgang wählen'
-        },
-        {
-            xtype: 'watch'
-        },
-        {
-            xtype: 'toolbar',
-            anchor: '100%',
-            items: [
+    /**
+     * Initialize with session record
+     * {JT.model.Session}
+     */
+    record: null,
+
+    initComponent: function() {
+
+        var me = this;
+
+
+        Ext.applyIf(me,{
+            items:[
                 {
-                    xtype: 'button',
-                    iconCls: 'reset',
-                    action: 'reset'
+                    xtype: 'watch'
                 },
                 {
-                    xtype: 'tbfill'
+                    xtype: 'toolbar',
+                    anchor: '100%',
+                    items: [
+                        {
+                            xtype: 'button',
+                            iconCls: 'reset',
+                            action: 'reset'
+                        },
+                        {
+                            xtype: 'tbfill'
+                        },
+                        {
+                            xtype: 'toggleslide'
+                        },
+                        {
+                            xtype: 'tbfill'
+                        },
+                        {
+                            xtype: 'button',
+                            iconCls: 'send',
+                            action: 'send'
+                        }
+                    ]
                 },
                 {
-                    xtype: 'toggleslide'
+                    xtype: 'selectissuebutton',
+                    margin: '20 0',
+                    anchor: '100%',
+                    text: 'Vorgang wählen'
                 },
                 {
-                    xtype: 'tbfill'
-                },
-                {
-                    xtype: 'button',
-                    iconCls: 'send',
-                    action: 'send'
+                    xtype: 'label',
+                    anchor: '100%',
+                    action: 'issueDescription',
+                    text: 'Please select an issue'
                 }
             ]
+        });
+
+        me.callParent();
+
+    },
+
+    /**
+     * Set Session
+     * @param {JT.model.Session} record
+     */
+    setRecord: function(record){
+        var me = this,
+            toggleslide = me.down('toggleslide');
+        me.record = record;
+
+        // Further configs
+        me.down('selectissuebutton').setText(record.getIssue().get('key'));
+        me.down('label[action=issueDescription]').setText(record.getIssue().get('title'));
+        if (toggleslide.getValue()!=record.get('active')){
+            toggleslide.toggle();
         }
-    ],
-    dockedItems: [
-        {
-            xtype: 'toolbar',
-            dock: 'bottom',
-            items: [
-                {
-                    xtype: 'button',
-                    iconCls: 'addAccount',
-                    action: 'addAccount'
-                }
-            ]
+
+
+    },
+
+    /**
+     * Get Session
+     * @returns {JT.model.Session}
+     */
+    getRecord: function(){
+        return this.record;
+    },
+
+
+    /**
+     * Starts Timer - Session
+     */
+    start: function(){
+
+        var session = this.record;
+        // Exception
+        if (!session){
+            Ext.log({
+                msg: 'No Session Selected',
+                level: 'error'
+            });
         }
-    ]
+
+        session.set({
+            'startdate':new Date(),
+            'active': true
+        });
+
+        session.save();
+
+    },
+
+    stop: function(){
+
+    }
+
+
+
 });

@@ -17,17 +17,9 @@ Ext.define('JT.store.Sessions', {
         var me = this;
         cfg = cfg || {};
         me.callParent([Ext.apply({
-            storeId: 'SessionsStore',
-            model: 'VSM.model.Session',
-            proxy: {
-                type: 'memory',
-                reader: {
-                    type: 'json'
-                },
-                writer: {
-                    type: 'json'
-                }
-            }
+            autoLoad: true,
+            model: 'JT.model.Session'
+
         }, cfg)]);
     }
 });

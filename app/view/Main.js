@@ -12,9 +12,34 @@ Ext.define("JT.view.Main", {
     cardSwitchAnimation: 'slide',
     layout: 'card',//http://try.sencha.com/extjs/4.1.1/community/carouselcontainer/
 
-    items:[
-        {
-            xtype: 'timer'
-        }
-    ]
+    initComponent: function() {
+
+        var me = this;
+
+        Ext.applyIf(me,{
+            items:[
+                {
+                    xtype: 'timer',
+                    dockedItems: [
+                        {
+                            xtype: 'toolbar',
+                            dock: 'bottom',
+                            items: [
+                                {
+                                    xtype: 'button',
+                                    iconCls: 'addAccount',
+                                    action: 'addAccount'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        });
+
+        me.callParent();
+
+    }
+
 });
+
